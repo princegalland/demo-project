@@ -1,23 +1,23 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.region       #"us-east-1"
 }
 
 resource "aws_vpc" "example_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.cidr_block_vpc   # "10.0.0.0/16"
 }
 
 resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.example_vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
+  cidr_block        = var.cidr_block_public_subnet  #"10.0.1.0/24"
+  availability_zone =var.availability_zone-public_subnet #"us-east-1a"
   map_public_ip_on_launch = true
 }
 
 # Create private subnet within the VPC
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.example_vpc.id
-  availability_zone = "us-east-1b"
-  cidr_block = "10.0.2.0/24"  # Example CIDR block for private subnet
+  availability_zone ="var.availability_zone-private_subnet" #"us-east-1b"
+  cidr_block =var.cidr_block_private_subnet  # Example CIDR block for private subnet
 }
 
 resource "aws_internet_gateway" "example_igw" {
@@ -53,7 +53,7 @@ resource "aws_security_group" "public_instance_sg" {
 }
 
 resource "aws_instance" "public_instance" {
-  ami           = "ami-051f8a213df8bc089"  # Replace with the AMI ID of the instance you want to launch
+  ami           = var.ami#"ami-051f8a213df8bc089"  # Replace with the AMI ID of the instance you want to launch
   instance_type = "t2.micro"     # Example instance type, replace with your desired instance type
   subnet_id     = aws_subnet.public_subnet.id
   #security_groups = [aws_security_group.public_instance_sg.name]
